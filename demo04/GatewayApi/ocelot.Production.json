@@ -1,0 +1,36 @@
+{  
+    "ReRoutes": [  
+      {  
+        "UseServiceDiscovery": true,   
+        "DownstreamPathTemplate": "/{url}",   
+        "DownstreamScheme": "http",  
+        "ServiceName": "catalogs-api",   
+        "LoadBalancerOptions": {   
+          "Type": "RoundRobin"  
+        },  
+        "UpstreamPathTemplate": "/catalogs/{url}",   
+        "UpstreamHttpMethod": [ "Get" ],   
+        "ReRoutesCaseSensitive": false   
+      },
+      {  
+        "UseServiceDiscovery": true,   
+        "DownstreamPathTemplate": "/{url}",   
+        "DownstreamScheme": "http",  
+        "ServiceName": "employees-api",   
+        "LoadBalancerOptions": {   
+          "Type": "RoundRobin"  
+        },  
+        "UpstreamPathTemplate": "/employees/{url}",   
+        "UpstreamHttpMethod": [ "Get" ],   
+        "ReRoutesCaseSensitive": false   
+      }  
+    ],  
+    "GlobalConfiguration": {   
+      "ServiceDiscoveryProvider": {   
+        "Host": "consul.sd",  
+        "Port": 8500,  
+        "Type":"PollConsul",  
+        "PollingInterval": 100  
+      }  
+    }  
+} 

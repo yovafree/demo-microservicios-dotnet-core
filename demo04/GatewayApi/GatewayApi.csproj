@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ocelot" Version="13.9.0-alpha0115" />
+    <PackageReference Include="Ocelot.Provider.Consul" Version="13.9.0-alpha0115" />
+  </ItemGroup>
+
+</Project>

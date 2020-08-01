@@ -1,0 +1,39 @@
+version: "3.4"
+services:
+    webclient:
+        build: 
+            context: ./webclient
+        #image: demo03-webclient-app:latest
+        container_name: demo03-web
+        hostname: demo03-web
+        ports:
+            - "8080:80"
+        depends_on:
+            - api
+    api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Development
+        build: ./api
+        #image: demo03-api-app:latest
+        container_name: demo03-api
+        hostname: demo03-api
+        ports:
+            - "5000:80"
+            - "44349:443"
+        networks:
+            - overlay
+        extra_hosts:
+            - "DEMOTEST:10.0.75.1"
+        depends_on:
+            - sql.data
+    sql.data:
+        image: crobles10/hr-database:20.0
+        container_name: sql.data
+        hostname: sql.data
+        ports:
+            - "1433:1433"
+        networks:
+            - overlay
+
+networks:
+  overlay:

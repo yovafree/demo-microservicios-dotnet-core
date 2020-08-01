@@ -1,0 +1,84 @@
+version: "3.4"
+services:
+    webclient:
+        build: 
+            context: ./webclient
+        container_name: demo04-web
+        hostname: demo04-web
+        ports:
+            - "80:80"
+        depends_on:
+            - gateway
+    consul.sd:
+        image: consul
+        container_name: consul.sd
+        hostname: "consul.sd"
+        ports:
+            - "8500:8500"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.2
+    gateway:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+        build: ./GatewayApi
+        container_name: demo04-gateway
+        hostname: demo04-gateway
+        ports:
+            - "9000:9000"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.3
+        depends_on:
+            - catalogs.api
+            - employees.api
+            - consul.sd
+    catalogs.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - Consul__Host=http://consul.sd:8500
+        build: ./CatalogsApi
+        container_name: demo04-catalogs
+        hostname: demo04-catalogs
+        ports:
+            - "5001:80"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.4
+        extra_hosts:
+            - "DEMOTEST:10.0.75.1"
+        depends_on:
+            - sql.data
+            - consul.sd
+    employees.api:
+        environment:
+            - ASPNETCORE_ENVIRONMENT=Production
+            - Consul__Host=http://consul.sd:8500
+        build: ./EmployeesApi
+        container_name: demo04-employees
+        hostname: demo04-employees
+        ports:
+            - "5002:80"
+        networks:
+            testing_net:
+                ipv4_address: 172.28.1.5
+        extra_hosts:
+            - "DEMOTEST:10.0.75.1"
+        depends_on:
+            - sql.data
+            - consul.sd
+    sql.data:
+        image: crobles10/hr-database:20.0
+        container_name: sql.data
+        hostname: sql.data
+        ports:
+            - "1433:1433"
+        networks:
+            - testing_net
+
+networks:
+    testing_net:
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.28.0.0/16
