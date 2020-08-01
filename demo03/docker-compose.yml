@@ -12,7 +12,7 @@ services:
             - api
     api:
         environment:
-            - ASPNETCORE_ENVIRONMENT=Development
+            - ASPNETCORE_ENVIRONMENT=Production
         build: ./api
         #image: demo03-api-app:latest
         container_name: demo03-api
